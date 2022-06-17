@@ -4,8 +4,8 @@ module com.wraithbeam.specvuzavtomatica {
 
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
+    requires org.apache.commons.io;
 
-    opens com.wraithbeam.specvuzavtomatica to javafx.fxml;
     exports com.wraithbeam.specvuzavtomatica;
     exports com.wraithbeam.specvuzavtomatica.controllers;
     opens com.wraithbeam.specvuzavtomatica.controllers to javafx.fxml;

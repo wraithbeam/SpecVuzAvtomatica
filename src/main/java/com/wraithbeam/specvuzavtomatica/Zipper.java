@@ -1,41 +1,49 @@
 package com.wraithbeam.specvuzavtomatica;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.nio.file.Path;
 import java.util.zip.DeflaterOutputStream;
 
 public class Zipper implements Runnable{
 
-    private Path path;
+    private File file;
+
+    public Zipper(File file) {
+        this.file = file;
+    }
+    public void setFile(File file) {
+        this.file = file;
+    }
+
 
     @Override
     public void run() {
-        File file = new File(path.toUri());
 
         try {
-            FileInputStream fis = new FileInputStream(file);
+            if (!file.getName().contains("zipped")){
+                FileInputStream fis = new FileInputStream(file);
 
+                String fileName = FilenameUtils.removeExtension(file.getName());
+                String extension = FilenameUtils.getExtension(file.getName());
 
-            FileOutputStream fos = new FileOutputStream(new File(file.getParent() + "\\zipped_" + file.getName()));
+                FileOutputStream fos = new FileOutputStream(new File(file.getParent() + "/" +
+                        fileName + "_zipped." + extension));
 
-            DeflaterOutputStream dos = new DeflaterOutputStream(fos);
+                DeflaterOutputStream dos = new DeflaterOutputStream(fos);
 
-            int data;
-            while ((data = fis.read()) != -1) {
-                dos.write(data);
+                int data;
+                while ((data = fis.read()) != -1) {
+                    dos.write(data);
+                }
+
+                fis.close();
+                dos.close();
             }
-
-            fis.close();
-            dos.close();
         }
-        catch (Exception e){
-            System.out.println("Случилась жопа! " + e);
-        }
+        catch (Exception ignored){}
     }
 
-    public void setPath(Path path) {
-        this.path = path;
-    }
 }

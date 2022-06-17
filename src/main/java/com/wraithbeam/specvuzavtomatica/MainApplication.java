@@ -1,9 +1,7 @@
 package com.wraithbeam.specvuzavtomatica;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -14,16 +12,13 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Выберите папку!");
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Выберите папку!");
 
-        File selectedFile = fileChooser.showOpenDialog(stage);
+        File selectedDirectory = directoryChooser.showDialog(stage);
 
-        Zipper zipper = new Zipper();
-        zipper.setPath(Path.of(selectedFile.getPath()));
-
-        Thread thread = new Thread(zipper);
-        thread.start();
+        DirectoryAnalyzer directoryAnalyzer = new DirectoryAnalyzer(selectedDirectory);
+        directoryAnalyzer.analyse();
     }
 
     public static void main(String[] args) {
