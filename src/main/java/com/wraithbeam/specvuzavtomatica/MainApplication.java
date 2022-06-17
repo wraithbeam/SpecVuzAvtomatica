@@ -15,10 +15,13 @@ public class MainApplication extends Application {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Выберите папку!");
 
-        File selectedDirectory = directoryChooser.showDialog(stage);
+        try {
+            File selectedDirectory = directoryChooser.showDialog(stage);
 
-        DirectoryAnalyzer directoryAnalyzer = new DirectoryAnalyzer(selectedDirectory);
-        directoryAnalyzer.analyse();
+            DirectoryAnalyzer directoryAnalyzer = new DirectoryAnalyzer(selectedDirectory);
+            directoryAnalyzer.analyse();
+        }
+        catch (Exception ignored){}
     }
 
     public static void main(String[] args) {
