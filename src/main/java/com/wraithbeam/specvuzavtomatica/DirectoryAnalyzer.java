@@ -28,20 +28,24 @@ public class DirectoryAnalyzer {
                 directoryAnalyzer.analyse();
             }
         }
-        while (countOfFiles != Zipper.getCountOfCompletedFiles()){
-            try {
-                TimeUnit.MILLISECONDS.sleep(500);
-                System.out.println(Zipper.getCountOfCompletedFiles());
-            }
-            catch (InterruptedException e){
-                System.out.println("Application was interrupted");
-            }
-        }
-        System.out.println("Task completed");
+//        while (countOfFiles != Zipper.getCountOfCompletedFiles()){
+//            try {
+//                TimeUnit.MILLISECONDS.sleep(500);
+//                System.out.println(Zipper.getCountOfCompletedFiles());
+//            }
+//            catch (InterruptedException e){
+//                System.out.println("Application was interrupted");
+//            }
+//        }
+//        System.out.println("Task completed");
     }
 
 
     public void setPath(File directory) {
         this.directory = directory;
+    }
+
+    public int getCountOfFiles() {
+        return countOfFiles;
     }
 }

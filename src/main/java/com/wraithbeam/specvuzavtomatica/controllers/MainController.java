@@ -1,6 +1,7 @@
 package com.wraithbeam.specvuzavtomatica.controllers;
 
 import com.wraithbeam.specvuzavtomatica.DirectoryAnalyzer;
+import com.wraithbeam.specvuzavtomatica.Zipper;
 import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,10 +12,17 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.String.format;
 
 public class MainController {
 
     private File selectedDirectory;
+    private long sizeDirectory = 0;
 
     @FXML
     private ProgressBar barProgress;
@@ -51,25 +59,54 @@ public class MainController {
     void startCompression(MouseEvent event) {
         DirectoryAnalyzer directoryAnalyzer = new DirectoryAnalyzer(selectedDirectory);
         directoryAnalyzer.analyse();
+
+        while (directoryAnalyzer.getCountOfFiles() != Zipper.getCountOfCompletedFiles()){
+            try {
+                labelProgress.setText(Zipper.getCountOfCompletedFiles() / directoryAnalyzer.getCountOfFiles() * 100 + "%");
+                barProgress.setProgress(Zipper.getCountOfCompletedFiles() / directoryAnalyzer.getCountOfFiles() * 100);
+                TimeUnit.MILLISECONDS.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setAttributes(){
-        labelFreeSpace.setText(byteToGigabyte(selectedDirectory.getFreeSpace()) + " Gb");
-        labelNeedSpace.setText(byteToMegabyte(selectedDirectory.length()) + " Mb");
+        try {
+            sizeDirectory = Files.walk(Path.of(selectedDirectory.getAbsolutePath()))
+                    .filter(p -> p.toFile().isFile())
+                    .mapToLong(p -> p.toFile().length())
+                    .sum();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        if(selectedDirectory.getFreeSpace() - selectedDirectory.length() >= selectedDirectory.length()){
-            btnStart.setDisable(true);
+        labelFreeSpace.setText(formatBytes(selectedDirectory.getFreeSpace()));
+        labelNeedSpace.setText(formatBytes(sizeDirectory));
+
+        if(selectedDirectory.getFreeSpace() - sizeDirectory >= sizeDirectory){
+            btnStart.setDisable(false);
         }
         else {
             labelNeedSpace.setStyle("-fx-text-fill: red");
         }
     }
 
-    private double byteToMegabyte(double bytes){
-        return bytes / (1024*1024);
-    }
-    private double byteToGigabyte(double bytes){
-        return bytes / (1024*1024*1024);
+
+    private String formatBytes(double bytes){
+
+        if (bytes / (1024*1024*1024) >= 1) {
+            return String.format("%.2f", (bytes / (1024 * 1024 * 1024))) + " Gb";
+        }
+        if (bytes / (1024 * 1024) >= 1){
+            return String.format("%.2f", (bytes / (1024 * 1024))) + " Mb";
+        }
+        if (bytes / 1024 >= 1){
+            return String.format("%.2f", (bytes / 1024)) + " Kb";
+        }
+        else {
+            return String.format("%.2f", (bytes)) + " Bytes";
+        }
     }
 
 }
