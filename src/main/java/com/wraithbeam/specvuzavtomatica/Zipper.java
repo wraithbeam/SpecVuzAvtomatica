@@ -10,6 +10,7 @@ import java.util.zip.DeflaterOutputStream;
 public class Zipper implements Runnable{
 
     private File file;
+    private static int countOfCompletedFiles = 0;
 
     public Zipper(File file) {
         this.file = file;
@@ -23,7 +24,7 @@ public class Zipper implements Runnable{
     public void run() {
 
         try {
-            if (!file.getName().contains("zipped")){
+            if (!(file.getName().contains("zipped"))){
                 FileInputStream fis = new FileInputStream(file);
 
                 String fileName = FilenameUtils.removeExtension(file.getName());
@@ -42,8 +43,18 @@ public class Zipper implements Runnable{
                 fis.close();
                 dos.close();
             }
+            countOfCompletedFiles++;
         }
-        catch (Exception ignored){}
+        catch (Exception e){
+
+        }
     }
 
+    public static int getCountOfCompletedFiles() {
+        return countOfCompletedFiles;
+    }
+
+    public static void setCountOfCompletedFiles(int countOfCompletedFiles) {
+        Zipper.countOfCompletedFiles = countOfCompletedFiles;
+    }
 }
