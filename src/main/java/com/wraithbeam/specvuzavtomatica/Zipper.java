@@ -5,6 +5,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.DeflaterOutputStream;
 
 public class Zipper implements Runnable{
@@ -25,6 +26,7 @@ public class Zipper implements Runnable{
 
         try {
             if (!(file.getName().contains("zipped"))){
+//                System.out.println("Start!" + countOfCompletedFiles);
                 FileInputStream fis = new FileInputStream(file);
 
                 String fileName = FilenameUtils.removeExtension(file.getName());
@@ -44,6 +46,7 @@ public class Zipper implements Runnable{
                 dos.close();
             }
             countOfCompletedFiles++;
+            System.out.println("Stop!" + countOfCompletedFiles);
         }
         catch (Exception e){
 
