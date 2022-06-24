@@ -26,8 +26,7 @@ public class Zipper implements Runnable{
 
         try {
             if (!(file.getName().contains("zipped"))){
-                TimeUnit.MILLISECONDS.sleep(500);
-                System.out.println("Start!" + countOfCompletedFiles);
+//                System.out.println("Start!" + countOfCompletedFiles);
                 FileInputStream fis = new FileInputStream(file);
 
                 String fileName = FilenameUtils.removeExtension(file.getName());

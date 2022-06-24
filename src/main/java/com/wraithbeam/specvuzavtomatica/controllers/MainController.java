@@ -3,6 +3,9 @@ package com.wraithbeam.specvuzavtomatica.controllers;
 import com.wraithbeam.specvuzavtomatica.DirectoryAnalyzer;
 import com.wraithbeam.specvuzavtomatica.Zipper;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
@@ -22,7 +26,8 @@ import static java.lang.String.format;
 public class MainController {
 
     private File selectedDirectory;
-    private long sizeDirectory = 0;
+    private double sizeDirectory = 0;
+    private double filesInDirectory = 0;
 
     @FXML
     private ProgressBar barProgress;
@@ -44,6 +49,7 @@ public class MainController {
 
     @FXML
     void openDirectoryChooser(MouseEvent event) {
+
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select directory!");
         try {
@@ -56,19 +62,32 @@ public class MainController {
     }
 
     @FXML
-    void startCompression(MouseEvent event) {
+    void startCompression(MouseEvent event){
+
+        //New thread which counts the percentage of completion
+        Thread thread  = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                double alreadyAnalyzed = Zipper.getCountOfCompletedFiles();
+                while (true){
+                    if (alreadyAnalyzed != Zipper.getCountOfCompletedFiles()) {
+                        System.out.println("Progress: " + alreadyAnalyzed/filesInDirectory);
+                        alreadyAnalyzed = Zipper.getCountOfCompletedFiles();
+                        updateProgress(alreadyAnalyzed / filesInDirectory);
+                    }
+
+                    if (filesInDirectory == alreadyAnalyzed) {
+                        System.out.println("Progress: " + alreadyAnalyzed/filesInDirectory);
+                        updateProgress(alreadyAnalyzed / filesInDirectory);
+                        break;
+                    }
+                }
+            }
+        });
+        thread.start();
+
         DirectoryAnalyzer directoryAnalyzer = new DirectoryAnalyzer(selectedDirectory);
         directoryAnalyzer.analyse();
-
-        while (directoryAnalyzer.getCountOfFiles() != Zipper.getCountOfCompletedFiles()){
-            try {
-                labelProgress.setText(Zipper.getCountOfCompletedFiles() / directoryAnalyzer.getCountOfFiles() * 100 + "%");
-                barProgress.setProgress(Zipper.getCountOfCompletedFiles() / directoryAnalyzer.getCountOfFiles() * 100);
-                TimeUnit.MILLISECONDS.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void setAttributes(){
@@ -77,6 +96,10 @@ public class MainController {
                     .filter(p -> p.toFile().isFile())
                     .mapToLong(p -> p.toFile().length())
                     .sum();
+            filesInDirectory = Files.walk(Path.of(selectedDirectory.getAbsolutePath()))
+                    .filter(p -> p.toFile().isFile())
+                    .count();
+            System.out.println(filesInDirectory);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,6 +130,11 @@ public class MainController {
         else {
             return String.format("%.2f", (bytes)) + " Bytes";
         }
+    }
+
+    private void updateProgress(double progress){
+        barProgress.setProgress(progress);
+//        labelProgress.setText(progress * 100 + "%");
     }
 
 }
