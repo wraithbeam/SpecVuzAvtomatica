@@ -134,7 +134,7 @@ public class MainController {
 
     private void updateProgress(double progress){
         barProgress.setProgress(progress);
-//        labelProgress.setText(progress * 100 + "%");
+        //labelProgress.setText(barProgress.getProgress() * 100 + "%");
     }
 
 }
