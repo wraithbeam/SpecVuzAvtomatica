@@ -13,6 +13,8 @@ import java.io.File;
 
 public class MainController {
 
+    private File selectedDirectory;
+
     @FXML
     private ProgressBar barProgress;
 
@@ -35,10 +37,10 @@ public class MainController {
     void openDirectoryChooser(MouseEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select directory!");
-
         try {
-            File selectedDirectory = directoryChooser.showDialog(new Stage());
+            selectedDirectory = directoryChooser.showDialog(new Stage());
 
+            setAttributes();
             DirectoryAnalyzer directoryAnalyzer = new DirectoryAnalyzer(selectedDirectory);
             directoryAnalyzer.analyse();
         }
@@ -50,6 +52,18 @@ public class MainController {
     @FXML
     void startCompression(MouseEvent event) {
 
+    }
+
+    private void setAttributes(){
+        labelFreeSpace.setText(byteToGigabyte(selectedDirectory.getFreeSpace()) + " Gb");
+        labelNeedSpace.setText(byteToMegabyte(selectedDirectory.length()) + " Mb");
+    }
+
+    private double byteToMegabyte(double bytes){
+        return bytes / (1024*1024);
+    }
+    private double byteToGigabyte(double bytes){
+        return bytes / (1024*1024*1024);
     }
 
 }
