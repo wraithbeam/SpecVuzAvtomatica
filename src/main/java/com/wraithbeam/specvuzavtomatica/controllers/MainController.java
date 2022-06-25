@@ -91,6 +91,7 @@ public class MainController {
     }
 
     private void setAttributes(){
+        barProgress.setProgress(0);
         try {
             sizeDirectory = Files.walk(Path.of(selectedDirectory.getAbsolutePath()))
                     .filter(p -> p.toFile().isFile())

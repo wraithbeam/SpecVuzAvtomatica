@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wraithbeam.specvuzavtomatica.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="168.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wraithbeam.specvuzavtomatica.controllers.MainController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
@@ -36,12 +36,12 @@
          </font>
       </Label>
       <ProgressBar fx:id="barProgress" layoutX="15.0" layoutY="117.0" prefHeight="34.0" prefWidth="572.0" progress="0.0" />
-      <Label layoutX="15.0" layoutY="161.0" text="Выполнено:">
+      <Label layoutX="15.0" layoutY="161.0" text="Выполнено:" visible="false">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="labelProgress" layoutX="100.0" layoutY="161.0" text="0%">
+      <Label fx:id="labelProgress" layoutX="100.0" layoutY="161.0" text="0%" visible="false">
          <font>
             <Font size="14.0" />
          </font>
