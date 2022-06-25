@@ -82,6 +82,8 @@ public class MainController {
                         break;
                     }
                 }
+                System.out.println("Progress: " + alreadyAnalyzed/filesInDirectory);
+                updateProgress(alreadyAnalyzed / filesInDirectory);
             }
         });
         thread.start();
